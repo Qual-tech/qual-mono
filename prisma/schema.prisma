@@ -2,17 +2,22 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
+}
+
+enum Sex {
+    Male
+    Female
 }
 
 model Example {
@@ -28,12 +33,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -56,6 +61,15 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+
+    sex   Sex?
+    birth DateTime?
+    phone String?
+
+    Plan       Plan?        @relation(fields: [planId], references: [id])
+    planId     String
+    Order      Order[]
+    TestResult TestResult[]
 }
 
 model VerificationToken {
@@ -64,4 +78,62 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Plan {
+    id          String        @id @default(cuid())
+    name        String
+    description String
+    Benefits    PlanBenefit[]
+    price       Int           @default(0)
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    Users       User[]
+    Order       Order[]
+}
+
+model PlanBenefit {
+    id          String   @id @default(cuid())
+    name        String
+    description String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    Plan        Plan?    @relation(fields: [planId], references: [id])
+    planId      String?
+}
+
+model Order {
+    id              String   @id @default(cuid())
+    User            User     @relation(fields: [userId], references: [id])
+    Plan            Plan     @relation(fields: [planId], references: [id])
+    service_fee     Int
+    transaction_fee Int
+    payment_fee     Int
+    tax             Int
+    invoice         String?  @default("")
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    userId          String
+    planId          String
+}
+
+model Media {
+    id         String       @id @default(cuid())
+    name       String
+    url        String
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    TestResult TestResult[]
+}
+
+model TestResult {
+    id        String   @id @default(cuid())
+    review    String   @db.Text()
+    score     Int
+    Video     Media    @relation(fields: [mediaId], references: [id])
+    User      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    mediaId   String
+    userId    String
 }
