@@ -59,7 +59,7 @@ const Home: NextPage = () => {
       document.body.appendChild(a);
       a.style.display = "none";
       a.href = url;
-      a.download = "react-webcam-stream-capture.webm";
+      a.download = "qual-recording.webm";
       a.click();
       window.URL.revokeObjectURL(url);
       setRecordedChunks([]);
@@ -81,24 +81,33 @@ const Home: NextPage = () => {
             <WebcamComponent ref={webcamRef} />
           </div>
 
-          <button className="group absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 rounded-full border-[1em] border-white bg-yellow-200 p-4 duration-300 hover:border-[.5em]">
-            <div className="relative h-10 w-10 duration-300 group-hover:h-12 group-hover:w-12">
-              <Image
-                src={"/assets/images/video-play.png"}
-                alt="man civil worker"
-                className="object-cover"
-                fill
-              />
-            </div>
-          </button>
+          {capturing ? (
+            <button
+              onClick={handleStopCaptureClick}
+              className="group absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 rounded-full border-[1em] border-white bg-yellow-200 p-4 duration-300 hover:border-[.5em]"
+            >
+              <div className="relative h-10 w-10 duration-300 group-hover:h-12 group-hover:w-12 flex justify-center items-center">
+                <div className="h-8 w-8 bg-yellow-600" />
+              </div>
+            </button>
+          ) : (
+            <button
+              onClick={handleStartCaptureClick}
+              className="group absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 rounded-full border-[1em] border-white bg-yellow-200 p-4 duration-300 hover:border-[.5em]"
+            >
+              <div className="relative h-10 w-10 duration-300 group-hover:h-12 group-hover:w-12">
+                <Image
+                  src={"/assets/images/video-play.png"}
+                  alt="man civil worker"
+                  className="object-cover"
+                  fill
+                />
+              </div>
+            </button>
+          )}
         </div>
 
-        <div className="mt-10">
-          {capturing ? (
-            <button onClick={handleStopCaptureClick}>Stop Capture</button>
-          ) : (
-            <button onClick={handleStartCaptureClick}>Start Capture</button>
-          )}
+        <div className="mt-20">
           {recordedChunks.length > 0 && (
             <button onClick={handleDownload}>Download</button>
           )}
