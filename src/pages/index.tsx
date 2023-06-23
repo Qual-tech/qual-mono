@@ -1,9 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 
 import { Quicksand } from "next/font/google";
-import Image from "next/image";
 import Header from "~/components/header/header";
 import Sidebar from "~/components/sedebar/sidebar";
 
