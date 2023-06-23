@@ -6,6 +6,7 @@ import { Quicksand } from "next/font/google";
 import Image from "next/image";
 import Header from "~/components/header/header";
 import Sidebar from "~/components/sedebar/sidebar";
+import AuthGuard from "~/components/guard/auth.guard";
 
 const quicksand = Quicksand({
   display: "auto",
@@ -16,6 +17,8 @@ const quicksand = Quicksand({
 const Home: NextPage = () => {
   return (
     <>
+      <AuthGuard />
+
       <Head>
         <title>Qual</title>
         <meta name="description" content="" />

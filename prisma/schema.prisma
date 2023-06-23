@@ -67,7 +67,7 @@ model User {
     phone String?
 
     Plan       Plan?        @relation(fields: [planId], references: [id])
-    planId     String
+    planId     String?
     Order      Order[]
     TestResult TestResult[]
 }

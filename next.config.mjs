@@ -9,7 +9,7 @@ const config = {
   reactStrictMode: true,
 
   images: {
-    domains: ['safebooru.org']
+    domains: ['safebooru.org', 'lh3.googleusercontent.com']
   },
 
   /**

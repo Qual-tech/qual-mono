@@ -7,6 +7,7 @@ import Image from "next/image";
 import Header from "~/components/header/header";
 import Sidebar from "~/components/sedebar/sidebar";
 import WebcamComponent from "~/components/webcam/webcam";
+import AuthGuard from "~/components/guard/auth.guard";
 
 const quicksand = Quicksand({
   display: "auto",
@@ -22,6 +23,8 @@ const Home: NextPage = () => {
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <AuthGuard />
 
       <div
         className={`flex bg-white ${quicksand.className} relative mx-auto max-w-screen-2xl`}
