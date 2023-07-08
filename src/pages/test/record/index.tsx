@@ -13,6 +13,20 @@ const Home: NextPage = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [capturing, setCapturing] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const recordingInterval = useRef<NodeJS.Timeout | null>(null);
+
+  const startRecording = useCallback(() => {
+    recordingInterval.current = setInterval(() => {
+      setRecordingTime((prev) => prev + 1);
+    }, 1000);
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    if (recordingInterval.current) {
+      clearInterval(recordingInterval.current);
+    }
+  }, []);
 
   const handleDataAvailable = useCallback(
     ({ data }: { data: Blob }) => {
@@ -27,6 +41,7 @@ const Home: NextPage = () => {
     if (webcamRef.current == null) return;
 
     setCapturing(true);
+    startRecording();
     mediaRecorderRef.current = new MediaRecorder(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       webcamRef.current?.stream as MediaStream,
@@ -40,14 +55,15 @@ const Home: NextPage = () => {
       handleDataAvailable
     );
     mediaRecorderRef.current.start();
-  }, [handleDataAvailable]);
+  }, [handleDataAvailable, startRecording]);
 
   const handleStopCaptureClick = useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setCapturing(false);
+      stopRecording();
     }
-  }, [mediaRecorderRef, setCapturing]);
+  }, [stopRecording]);
 
   const handleDownload = useCallback(() => {
     if (recordedChunks.length) {
@@ -63,8 +79,14 @@ const Home: NextPage = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       setRecordedChunks([]);
+      setRecordingTime(0);
     }
   }, [recordedChunks]);
+
+  const resetRecording = useCallback(() => {
+    setRecordedChunks([]);
+    setRecordingTime(0);
+  }, []);
 
   return (
     <>
@@ -77,8 +99,80 @@ const Home: NextPage = () => {
       <AuthGuard />
       <MainLayout>
         <div className="relative rounded-3xl bg-orange-100">
-          <div className="relative h-[720px] w-[1280px] overflow-hidden rounded-3xl ">
-            <WebcamComponent ref={webcamRef} />
+          <div className="relative h-[720px] w-[1280px] overflow-hidden rounded-3xl border-2 border-orange-100">
+            <div className="relative">
+              <WebcamComponent ref={webcamRef} />
+
+              {recordedChunks.length > 0 && (
+                <div className="absolute top-0 flex h-full w-full items-center justify-center backdrop-blur-md backdrop-brightness-75">
+                  <div className="flex flex-col items-center gap-3 rounded-md bg-white px-8 py-4">
+                    <span className="font-semibold">Konfirmasi</span>
+
+                    <div className="max-w-3xl w-full h-full aspect-video">
+                      <video controls>
+                        <source
+                          src={URL.createObjectURL(new Blob(recordedChunks))}
+                        />
+                      </video>
+                    </div>
+
+                    <div className="flex gap-8 ">
+                      <button
+                        type="button"
+                        onClick={resetRecording}
+                        className="flex items-center gap-2 rounded-md bg-yellow-200 px-4 py-2 font-semibold text-yellow-700 duration-200 hover:bg-yellow-300 hover:text-yellow-800"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="h-6 w-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                          />
+                        </svg>
+
+                        <span>Rekam Ulang</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 rounded-md bg-green-200 px-4 py-2 font-semibold text-green-700 duration-200 hover:bg-green-300 hover:text-green-800"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="h-6 w-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z"
+                          />
+                        </svg>
+
+                        <span>Lanjutkan</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="absolute bottom-0 left-0 flex h-20 w-full items-center justify-between bg-gradient-to-t from-black to-transparent px-8">
+              <div></div>
+              <div className="flex gap-1 text-white">
+                <span>{Math.floor((recordingTime % 3600) / 60)}</span>:
+                <span>{Math.floor((recordingTime % 3600) % 60)}</span>
+              </div>
+            </div>
           </div>
 
           {capturing ? (
@@ -86,19 +180,20 @@ const Home: NextPage = () => {
               onClick={handleStopCaptureClick}
               className="group absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 rounded-full border-[1em] border-white bg-yellow-200 p-4 duration-300 hover:border-[.5em]"
             >
-              <div className="relative h-10 w-10 duration-300 group-hover:h-12 group-hover:w-12 flex justify-center items-center">
+              <div className="relative flex h-10 w-10 items-center justify-center duration-300 group-hover:h-12 group-hover:w-12">
                 <div className="h-8 w-8 bg-yellow-600" />
               </div>
             </button>
           ) : (
             <button
               onClick={handleStartCaptureClick}
+              disabled={!webcamRef.current || recordedChunks.length > 0}
               className="group absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 rounded-full border-[1em] border-white bg-yellow-200 p-4 duration-300 hover:border-[.5em]"
             >
               <div className="relative h-10 w-10 duration-300 group-hover:h-12 group-hover:w-12">
                 <Image
                   src={"/assets/images/video-play.png"}
-                  alt="man civil worker"
+                  alt="video play"
                   className="object-cover"
                   fill
                 />
@@ -109,7 +204,14 @@ const Home: NextPage = () => {
 
         <div className="mt-20">
           {recordedChunks.length > 0 && (
-            <button onClick={handleDownload}>Download</button>
+            <div>
+              <button onClick={handleDownload}>Download</button>
+              {/* <div>
+                <video controls>
+                  <source src={URL.createObjectURL(new Blob(recordedChunks))} />
+                </video>
+              </div> */}
+            </div>
           )}
         </div>
       </MainLayout>

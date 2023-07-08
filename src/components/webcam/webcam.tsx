@@ -21,6 +21,7 @@ const WebcamComponent = forwardRef<
       ref={ref}
       screenshotFormat="image/jpeg"
       width={1280}
+      mirrored
       videoConstraints={videoConstraints}
     />
   );
