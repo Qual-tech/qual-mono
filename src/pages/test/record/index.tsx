@@ -7,9 +7,12 @@ import AuthGuard from "~/components/guard/auth.guard";
 import MainLayout from "~/layouts/main.layout";
 import { useCallback, useRef, useState } from "react";
 import type Webcam from "react-webcam";
+import { useRouter } from "next/router";
 
-const Home: NextPage = () => {
+const Record: NextPage = () => {
+  const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [capturing, setCapturing] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
@@ -84,9 +87,19 @@ const Home: NextPage = () => {
   }, [recordedChunks]);
 
   const resetRecording = useCallback(() => {
+    if (!videoRef.current) return alert("Video belum dimuat");
     setRecordedChunks([]);
     setRecordingTime(0);
   }, []);
+
+  const nextStep = useCallback(() => {
+    if (recordedChunks.length <= 0) return;
+    if (recordingTime < 5) return alert("Video harus lebih dari 5 detik");
+    if (!videoRef.current) return alert("Video belum dimuat");
+
+    // URL.revokeObjectURL(videoRef.current.src);
+    return void router.push(`/test/result?localURL=${videoRef.current.src}`);
+  }, [recordedChunks.length, recordingTime, router]);
 
   return (
     <>
@@ -108,12 +121,12 @@ const Home: NextPage = () => {
                   <div className="flex flex-col items-center gap-3 rounded-md bg-white px-8 py-4">
                     <span className="font-semibold">Konfirmasi</span>
 
-                    <div className="max-w-3xl w-full h-full aspect-video">
-                      <video controls>
-                        <source
-                          src={URL.createObjectURL(new Blob(recordedChunks))}
-                        />
-                      </video>
+                    <div className="aspect-video h-full w-full max-w-3xl">
+                      <video
+                        controls
+                        ref={videoRef}
+                        src={URL.createObjectURL(new Blob(recordedChunks))}
+                      />
                     </div>
 
                     <div className="flex gap-8 ">
@@ -141,6 +154,7 @@ const Home: NextPage = () => {
                       </button>
                       <button
                         type="button"
+                        onClick={nextStep}
                         className="flex items-center gap-2 rounded-md bg-green-200 px-4 py-2 font-semibold text-green-700 duration-200 hover:bg-green-300 hover:text-green-800"
                       >
                         <svg
@@ -187,7 +201,7 @@ const Home: NextPage = () => {
           ) : (
             <button
               onClick={handleStartCaptureClick}
-              disabled={!webcamRef.current || recordedChunks.length > 0}
+              disabled={recordedChunks.length > 0}
               className="group absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 rounded-full border-[1em] border-white bg-yellow-200 p-4 duration-300 hover:border-[.5em]"
             >
               <div className="relative h-10 w-10 duration-300 group-hover:h-12 group-hover:w-12">
@@ -219,4 +233,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Record;

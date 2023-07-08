@@ -8,7 +8,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 ml-16 mr-2 flex items-center justify-between bg-[#FBFAF2] p-2 px-5">
+    <header className="sticky top-0 ml-16 mr-2 flex items-center justify-between bg-[#FBFAF2] p-2 px-5 z-50">
       <Link href="/">
         <span className="font-semibold">Qual</span>
       </Link>
