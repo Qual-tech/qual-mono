@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import AuthGuard from "~/components/guard/auth.guard";
 import MainLayout from "~/layouts/main.layout";
 

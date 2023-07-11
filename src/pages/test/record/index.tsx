@@ -123,6 +123,7 @@ const Record: NextPage = () => {
 
                     <div className="aspect-video h-full w-full max-w-3xl">
                       <video
+                        // style={{scale: '-1 1'}}
                         controls
                         ref={videoRef}
                         src={URL.createObjectURL(new Blob(recordedChunks))}
