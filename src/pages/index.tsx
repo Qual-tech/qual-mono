@@ -4,6 +4,8 @@ import Head from "next/head";
 import { Quicksand } from "next/font/google";
 import Header from "~/components/header/header";
 import Sidebar from "~/components/sedebar/sidebar";
+import Image from "next/image";
+import Link from "next/link";
 
 const quicksand = Quicksand({
   display: "auto",
@@ -46,6 +48,17 @@ const Home: NextPage = () => {
                 Mari tingkatkan kualitas tenaga pengajar di Indonesia!Eitss..
                 tapi jangan takut, siapapun dapat menggunakan layanan ini lho!{" "}
               </p>
+
+              <Link href={'/test'} className="w-fit flex bg-[#EFE3C9] p-4 py-3 gap-3 rounded-lg items-center font-semibold">
+                <div className="relative h-5 w-16">
+                  <Image
+                    src="/assets/arrow.png"
+                    alt="arrow"
+                    fill
+                  />
+                </div>
+                <span>Mulai Tes!</span>
+              </Link>
             </div>
           </main>
         </div>

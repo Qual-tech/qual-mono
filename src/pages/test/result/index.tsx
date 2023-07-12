@@ -30,7 +30,7 @@ const Result: NextPage = () => {
           ).toString();
         }
 
-        if (Number(scoreContainerRef.current?.innerText) >= 85) {
+        if (Number(scoreContainerRef.current?.innerText) >= 78) {
           if (scoreInterval.current) {
             clearInterval(scoreInterval.current);
           }
@@ -56,7 +56,7 @@ const Result: NextPage = () => {
       <MainLayout>
         <div className="mb-8 flex w-full flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center gap-2">
-            <div className="flex h-32 w-32 items-center justify-center rounded-full bg-green-300 text-7xl font-semibold text-white ">
+            <div className="flex h-32 w-32 items-center justify-center rounded-full bg-green-500 text-7xl font-semibold text-white ">
               <div ref={scoreContainerRef}>0</div>
             </div>
             <span className="text-2xl font-semibold">Skor Kamu</span>
