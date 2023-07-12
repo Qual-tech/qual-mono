@@ -45,17 +45,16 @@ const Home: NextPage = () => {
               </h1>
 
               <p className="">
-                Mari tingkatkan kualitas tenaga pengajar di Indonesia!Eitss..
+                Mari tingkatkan kualitas tenaga pengajar di Indonesia!{' '}Eitss..
                 tapi jangan takut, siapapun dapat menggunakan layanan ini lho!{" "}
               </p>
 
-              <Link href={'/test'} className="w-fit flex bg-[#EFE3C9] p-4 py-3 gap-3 rounded-lg items-center font-semibold">
+              <Link
+                href={"/test"}
+                className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold"
+              >
                 <div className="relative h-5 w-16">
-                  <Image
-                    src="/assets/arrow.png"
-                    alt="arrow"
-                    fill
-                  />
+                  <Image src="/assets/arrow.png" alt="arrow" fill />
                 </div>
                 <span>Mulai Tes!</span>
               </Link>

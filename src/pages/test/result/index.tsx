@@ -88,6 +88,12 @@ const Result: NextPage = () => {
             </div>
           </div>
 
+          <div className="mt-4 ml-auto w-fit flex">
+            <button className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold">
+              <span>Unduh</span>
+            </button>
+          </div>
+
           <div className="relative mt-8">
             <ul className="flex flex-col gap-2">
               <li>
