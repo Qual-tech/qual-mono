@@ -1,7 +1,9 @@
+import { map } from "@trpc/server/observable";
+import { time } from "console";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import AuthGuard from "~/components/guard/auth.guard";
 import MainLayout from "~/layouts/main.layout";
 
@@ -10,6 +12,25 @@ const Result: NextPage = () => {
   const { localURL } = router.query;
   const scoreContainerRef = useRef<HTMLDivElement>(null);
   const scoreInterval = useRef<NodeJS.Timeout | null>(null);
+  const [messages, setMessages] = useState<{ time: string; message: string }[]>(
+    [
+      {
+        time: "0:09",
+        message:
+          "Kenapa intonasi suaramu semakin rendah? Kamu terlihat ragu-ragu.",
+      },
+      {
+        time: "1:09",
+        message:
+          "Kamu perlu memperbaiki nada bicara. Di sini kamu terlalu terburu-buru.",
+      },
+      {
+        time: "1:45",
+        message:
+          "Kamu perlu memperbaiki nada bicara. Di sini kamu terlalu terburu-buru.",
+      },
+    ]
+  );
 
   useEffect(() => {
     return () => {
@@ -88,32 +109,47 @@ const Result: NextPage = () => {
             </div>
           </div>
 
-          <div className="mt-4 ml-auto w-fit flex">
-            <button className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold">
+          <div className="ml-auto mt-4 flex w-fit">
+            <button
+              className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold"
+              onClick={() => {
+                // show two confirm that accept time and message to set setMessage state
+                const time = prompt("Masukkan waktu");
+                const message = prompt("Masukkan pesan");
+
+                setMessages((s) => {
+                  return [
+                    ...s,
+                    {
+                      time: time ? time.toString() : "0:00",
+                      message: message ? message.toString() : "",
+                    },
+                  ];
+                });
+              }}
+            >
               <span>Unduh</span>
             </button>
           </div>
 
           <div className="relative mt-8">
-            <ul className="flex flex-col gap-2">
-              <li>
-                <div>
-                  <span>00:01</span>
-                  <p>
-                    Kamu perlu memperbaiki nada bicara. Kami melihat di sini
-                    kamu terlalu terburu-buru.
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <span>00:01</span>
-                  <p>
-                    Kamu perlu memperbaiki nada bicara. Kami melihat di sini
-                    kamu terlalu terburu-buru.
-                  </p>
-                </div>
-              </li>
+            <ul className="flex flex-col gap-4">
+              {messages.map(({ message, time }, i) => (
+                <li key={time}>
+                  <div>
+                    <span
+                      onClick={() =>
+                        setMessages((s) => {
+                          return s.filter((_, index) => index !== i);
+                        })
+                      }
+                    >
+                      {time}
+                    </span>
+                    <p>{message}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
