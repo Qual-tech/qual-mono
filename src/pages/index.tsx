@@ -45,8 +45,9 @@ const Home: NextPage = () => {
               </h1>
 
               <p className="">
-                Mari tingkatkan kualitas tenaga pengajar di Indonesia!{' '}Eitss..
-                tapi jangan takut, siapapun dapat menggunakan layanan ini lho!{" "}
+                Mari tingkatkan kualitas tenaga pengajar di Indonesia! <br />
+                Eitss.. tapi jangan takut, siapapun dapat menggunakan layanan
+                ini lho!{" "}
               </p>
 
               <Link
