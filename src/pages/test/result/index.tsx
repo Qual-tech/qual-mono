@@ -1,5 +1,3 @@
-import { map } from "@trpc/server/observable";
-import { time } from "console";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";

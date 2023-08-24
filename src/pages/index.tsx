@@ -35,7 +35,7 @@ const Home: NextPage = () => {
               background: "url('/assets/images/main-bg.png')",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "right bottom",
-              backgroundAttachment: "fixed",
+              // backgroundAttachment: "fixed",
               backgroundSize: "50%",
             }}
           >
