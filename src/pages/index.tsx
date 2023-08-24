@@ -41,7 +41,7 @@ const Home: NextPage = () => {
           >
             <div className="my-auto flex w-3/4 flex-col gap-8 lg:w-1/2">
               <h1 className="text-7xl font-bold">
-                Tingkatkan kualitas bersama Qual!
+                Tingkatkan kualitas bersama Qual! 
               </h1>
 
               <p className="">
