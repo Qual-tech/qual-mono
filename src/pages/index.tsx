@@ -1,15 +1,20 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { Quicksand } from "next/font/google";
+import { Quicksand, Marck_Script } from "next/font/google";
 import Header from "~/components/header/header";
 import Sidebar from "~/components/sedebar/sidebar";
-import Image from "next/image";
 import Link from "next/link";
 
 const quicksand = Quicksand({
   display: "auto",
   weight: ["600", "700", "500"],
+  subsets: ["latin-ext"],
+});
+
+const marck_script = Marck_Script({
+  display: "auto",
+  weight: ["400"],
   subsets: ["latin-ext"],
 });
 
@@ -30,7 +35,7 @@ const Home: NextPage = () => {
           <Header />
 
           <main
-            className="ml-16 flex h-full  flex-col p-8 pt-16"
+            className="ml-16 flex h-full flex-col p-8 pt-16"
             style={{
               background: "url('/assets/images/main-bg.png')",
               backgroundRepeat: "no-repeat",
@@ -40,11 +45,11 @@ const Home: NextPage = () => {
             }}
           >
             <div className="my-auto flex w-3/4 flex-col gap-8 lg:w-1/2">
-              <h1 className="text-7xl font-bold">
+              <h1 className="font-Red_Hat_Display text-7xl font-bold">
                 Tingkatkan kualitas bersama Qual!
               </h1>
 
-              <p className="">
+              <p className="font-Quicksand font-normal">
                 Mari tingkatkan kualitas tenaga pengajar di Indonesia! <br />
                 Eitss.. tapi jangan takut, siapapun dapat menggunakan layanan
                 ini lho!{" "}
@@ -52,15 +57,28 @@ const Home: NextPage = () => {
 
               <Link
                 href={"/test"}
-                className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold"
+                className="flex w-fit items-center gap-3 rounded-lg bg-main-yellow p-4 py-3 font-semibold"
               >
-                <div className="relative h-5 w-16">
+                {/* <div className="relative h-5 w-16">
                   <Image src="/assets/arrow.png" alt="arrow" fill />
-                </div>
-                <span>Mulai Tes!</span>
+                </div> */}
+                <span className="font-bold">Mulai Tes!</span>
               </Link>
             </div>
           </main>
+
+          <section className="ml-16 flex h-fit flex-col bg-[#2C2525] p-20 pt-16 text-[#EFE3C9]">
+            <div>
+              <p className="text-4xl" style={marck_script.style}>
+                “Ing Ngarsa Sung Tuladha,
+                <br /> Ing Madya Mangun Karsa,
+                <br /> Tut Wuri Handayani”
+              </p>
+            </div>
+            <div className="ml-auto font-Red_Hat_Display text-xl font-semibold ">
+              <span>-Ki Hadjar Dewantara</span>
+            </div>
+          </section>
         </div>
       </div>
     </>

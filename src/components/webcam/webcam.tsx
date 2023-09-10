@@ -17,6 +17,7 @@ const WebcamComponent = forwardRef<
   return (
     <Webcam
       audio
+      muted
       height={720}
       ref={ref}
       screenshotFormat="image/jpeg"
