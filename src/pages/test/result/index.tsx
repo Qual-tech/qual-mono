@@ -5,39 +5,64 @@ import { useEffect, useRef, useState } from "react";
 import AuthGuard from "~/components/guard/auth.guard";
 import MainLayout from "~/layouts/main.layout";
 
+const EVALUATIONS = [
+  {
+    message: "Kenapa intonasi suaramu semakin rendah? Kamu terlihat ragu-ragu.",
+  },
+  {
+    message:
+      "Kamu perlu memperbaiki nada bicara. Di sini kamu terlalu terburu-buru.",
+  },
+  {
+    message:
+      "Kamu perlu memperbaiki nada bicara. Di sini kamu terlalu terburu-buru.",
+  },
+];
+
+const randomScore = () => {
+  return Math.floor(78 + Math.random() * 22);
+};
+
+const randomEvaluation = (timestemp: string) => {
+  return {
+    time: timestemp,
+    ...EVALUATIONS[Math.floor(Math.random() * EVALUATIONS.length)],
+  };
+};
+
 const Result: NextPage = () => {
   const router = useRouter();
   const { localURL } = router.query;
+  const videoRef = useRef<HTMLVideoElement>(null);
   const scoreContainerRef = useRef<HTMLDivElement>(null);
   const scoreInterval = useRef<NodeJS.Timeout | null>(null);
-  const [messages, setMessages] = useState<{ time: string; message: string }[]>(
-    [
-      {
-        time: "0:09",
-        message:
-          "Kenapa intonasi suaramu semakin rendah? Kamu terlihat ragu-ragu.",
-      },
-      {
-        time: "1:09",
-        message:
-          "Kamu perlu memperbaiki nada bicara. Di sini kamu terlalu terburu-buru.",
-      },
-      {
-        time: "1:45",
-        message:
-          "Kamu perlu memperbaiki nada bicara. Di sini kamu terlalu terburu-buru.",
-      },
-    ]
-  );
+  const [messages, setMessages] = useState<
+    { time: string; message?: string }[]
+  >([]);
 
   useEffect(() => {
     return () => {
       if (localURL) {
         console.log("URL revoked!");
 
-        URL.revokeObjectURL(String(localURL));
+        // URL.revokeObjectURL(String(localURL));
       }
     };
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      const duration = videoRef.current?.duration;
+      console.log("file: index.tsx:56 ~ useEffect ~ duration:", duration);
+
+      for (
+        let i = 0;
+        i <= Math.floor(Math.random() * EVALUATIONS.length);
+        i++
+      ) {
+        // setMessages((s) => [...s, randomEvaluation(String(i * duration))]);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -49,7 +74,7 @@ const Result: NextPage = () => {
           ).toString();
         }
 
-        if (Number(scoreContainerRef.current?.innerText) >= 78) {
+        if (Number(scoreContainerRef.current?.innerText) >= randomScore()) {
           if (scoreInterval.current) {
             clearInterval(scoreInterval.current);
           }
@@ -94,6 +119,7 @@ const Result: NextPage = () => {
               <div className="aspect-video h-full w-full">
                 {localURL ? (
                   <video
+                    ref={videoRef}
                     className="aspect-video h-full w-full"
                     controls
                     src={String(localURL)}
@@ -108,24 +134,7 @@ const Result: NextPage = () => {
           </div>
 
           <div className="ml-auto mt-4 flex w-fit">
-            <button
-              className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold"
-              onClick={() => {
-                // show two confirm that accept time and message to set setMessage state
-                const time = prompt("Masukkan waktu");
-                const message = prompt("Masukkan pesan");
-
-                setMessages((s) => {
-                  return [
-                    ...s,
-                    {
-                      time: time ? time.toString() : "0:00",
-                      message: message ? message.toString() : "",
-                    },
-                  ];
-                });
-              }}
-            >
+            <button className="flex w-fit items-center gap-3 rounded-lg bg-[#EFE3C9] p-4 py-3 font-semibold">
               <span>Unduh</span>
             </button>
           </div>
